@@ -8,8 +8,10 @@ import { useNavigate } from "react-router-dom";
 import { PokemonsApi } from "../../services/pokemon.service";
 import { GameApi } from "../../services/game.service";
 import { Button } from "@mui/material";
+import Loader from "../../components/generall/loader";
 const PokemonList = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [pokemons, setPokemons] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -34,6 +36,7 @@ const PokemonList = () => {
   };
 
   const handleSelect = async (pokemon) => {
+    setLoading(true);
     try {
       const response = await GameApi.start(pokemon.id);
       navigate(`/battle/${response.sessionId}`);
@@ -48,7 +51,7 @@ const PokemonList = () => {
     localStorage.removeItem("token");
     navigate("/login");
   };
-
+  if (loading) return <Loader />;
   return (
     <Box>
       <Box
