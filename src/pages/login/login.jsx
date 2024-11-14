@@ -3,17 +3,22 @@ import { AuthUserApi } from "../../services/auth.service";
 import { Box, Button, Container, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthProvider";
+import useCustomToast from "../../hooks/useToaster";
 
 export const Login = () => {
   const { account, getAccount, connectMetamask } = useContext(AuthContext);
+  const { showSuccessToast, showErrorToast } = useCustomToast();
+
   const navigate = useNavigate();
   const handleSignIn = async () => {
     try {
       const address = account || (await getAccount());
       const { nonce } = await AuthUserApi.generateNonce(address);
       await connectMetamask(nonce);
+      showSuccessToast("Successfully signed in!");
       navigate("/pokemon-list");
     } catch (error) {
+      showErrorToast("Failed to connect Metamask. Check console for details.");
       console.error("Authentication error:", error);
     }
   };
