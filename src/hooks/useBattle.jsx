@@ -5,6 +5,7 @@ import { socketService } from "../services/socket.service";
 const useBattle = (id, showInfoToast, showToast, navigate) => {
   const [battleState, setBattleState] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [battleLogs, setBattleLogs] = useState([]);
 
   const updateBattleState = (state) => {
     setBattleState(state);
@@ -25,11 +26,11 @@ const useBattle = (id, showInfoToast, showToast, navigate) => {
         showInfoToast(`Game ended. Winner: ${result.winner}`);
         setTimeout(() => navigate("/pokemon-list"), 5000);
       } else {
-        showToast(
-          `${
-            result.attackerId === result.computerPokemon.id ? "🤖" : "🧑"
-          } received ${result.damage} damage`
-        );
+        const logMessage = `${
+          result.attackerId === result.computerPokemon.id ? "🤖" : "🧑"
+        } received ${result.damage} damage`;
+        setBattleLogs((prevLogs) => [...prevLogs, logMessage]);
+        showToast(logMessage);
         setLoading(false);
       }
     });
@@ -40,7 +41,7 @@ const useBattle = (id, showInfoToast, showToast, navigate) => {
     };
   }, []);
 
-  return { battleState, setBattleState, loading, setLoading };
+  return { battleState, setBattleState, loading, setLoading, battleLogs };
 };
 
 export default useBattle;

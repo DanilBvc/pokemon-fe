@@ -7,15 +7,16 @@ import { useNavigate, useParams } from "react-router-dom";
 import useCustomToast from "../../hooks/useToaster";
 import { Counter } from "../../components/generall/animatedCounter";
 import useBattle from "../../hooks/useBattle";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import Loader from "../../components/generall/loader";
 import PokemonCard from "../../components/PokemonCard";
+import BattleLogs from "../../components/BattleLogs";
 
 const BattleScreen = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { showToast, showInfoToast, showErrorToast } = useCustomToast();
-  const { battleState, loading, setLoading } = useBattle(
+  const { battleState, loading, setLoading, battleLogs } = useBattle(
     id,
     showInfoToast,
     showToast,
@@ -26,7 +27,7 @@ const BattleScreen = () => {
   const isPlayerTurn =
     battleState?.attackerId === battleState?.playerPokemon.id;
 
-  const handleAttack = async () => {
+  const handleAttack = useCallback(async () => {
     if (loading) return;
     setLoading(true);
     try {
@@ -40,7 +41,7 @@ const BattleScreen = () => {
       showErrorToast(`Attack failed: ${error}`);
       setLoading(false);
     }
-  };
+  }, [loading, id, battleState, isPlayerTurn]);
 
   useEffect(() => {
     if (!battleState?.attackerId || battleState?.endedAt) return;
@@ -87,6 +88,7 @@ const BattleScreen = () => {
           Attack
         </Button>
       </Box>
+      <BattleLogs logs={battleLogs} />
     </Box>
   );
 };

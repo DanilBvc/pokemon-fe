@@ -21,22 +21,18 @@ const AuthProvider = ({ children }) => {
   };
 
   const connectMetamask = async (message) => {
-    try {
-      if (!window.ethereum)
-        throw new Error("No crypto wallet found. Please install it.");
+    if (!window.ethereum)
+      throw new Error("No crypto wallet found. Please install it.");
 
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-      const nonceMessage = `Nonce: ${message}`;
-      const signature = await signer.signMessage(nonceMessage);
-      const address = await signer.getAddress();
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const nonceMessage = `Nonce: ${message}`;
+    const signature = await signer.signMessage(nonceMessage);
+    const address = await signer.getAddress();
 
-      const response = await AuthUserApi.verifySignature(address, signature);
-      localStorage.setItem("token", response.token);
-      setSignature(signature);
-    } catch (error) {
-      console.error("Auth error:", error);
-    }
+    const response = await AuthUserApi.verifySignature(address, signature);
+    localStorage.setItem("token", response.token);
+    setSignature(signature);
   };
 
   return (

@@ -22,7 +22,7 @@ const PokemonCard = ({ pokemon, onSelect }) => (
       component="img"
       sx={{ objectFit: "contain", backgroundColor: "#f4f6f8", p: 2 }}
       height="180"
-      image={pokemon.image.sprite}
+      image={pokemon.image.hires}
       alt={pokemon.name.english}
     />
     <CardContent sx={{ textAlign: "center" }}>
